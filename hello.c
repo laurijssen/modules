@@ -60,7 +60,7 @@ static struct file_operations hello_fops =
 
 static int __init hello_init(void)
 {
-	printk("Hello, world\n");
+	printk("init called\n");
 
 	if (alloc_chrdev_region(&first, 0, 1, DEVICE_NAME) < 0)
 		return -1;
@@ -78,7 +78,6 @@ static int __init hello_init(void)
 		return -1;
 	}
 
-	printk("3");
 	cdev_init(&c_dev, &hello_fops);
 
 	if (cdev_add(&c_dev, first, 1) == -1)
@@ -89,8 +88,6 @@ static int __init hello_init(void)
 		unregister_chrdev_region(first, 1);
 		return -1;
 	}
-	printk("5");
-	printk("4");
 	return 0;
 }
 
