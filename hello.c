@@ -34,7 +34,14 @@ static ssize_t hello_read(struct file *f, char __user *buf, size_t len, loff_t *
 
 static ssize_t hello_write(struct file *f, const char __user *buf, size_t len, loff_t *off)
 {
+	char b[64] = {0};
 	printk("hello world write()");
+	int i;
+	for (i = 0; i < len; i++)
+	{
+		b[i] = buf[i];
+	}
+	printk(b);
 	return len;
 }
 
