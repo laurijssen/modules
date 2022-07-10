@@ -7,7 +7,7 @@
 #include <asm/uaccess.h>
 #include <asm/io.h>
 
-#define enable_reboot 1
+#define enable_reboot 0
 
 #define DEVICE_NAME "rbt"
 #define CLASS_NAME "chardrv"
@@ -27,7 +27,7 @@ static long my_write_cr0(long value)
 
 #define disable_write_protection() my_write_cr0(read_cr0() & (~0x10000));
 
-#define enable_write_protection() ({my_write_cr0(read_cr0() | (~0x10000));})
+#define enable_write_protection() my_write_cr0(read_cr0() | (0x10000));
 
 static unsigned long *sys_call_table_address;
 asmlinkage int (*old_reboot_sys_call)(int, int, int, void*);
@@ -52,18 +52,18 @@ asmlinkage int h_reboot(int magic1, int magic2, int cmd, void *args)
 		return old_reboot_sys_call(magic1, magic2, cmd, args);
 	}
 
-	printk(KERN_NOTICE, "blocked reboot call");
+	printk("blocked reboot call\n");
 
 	return EPERM;
 }
 
-static void hook_sys_call(void)
+void hook_sys_call(void)
 {
 	old_reboot_sys_call = sys_call_table_address[__NR_reboot];
 	disable_write_protection();
 	sys_call_table_address[__NR_reboot] = (unsigned long)h_reboot;
 	enable_write_protection();
-	printk(KERN_NOTICE, "hooked reboot call");
+	printk("hooked reboot call\n");
 }
 
 static void restore_reboot_sys_call(void)
@@ -154,6 +154,8 @@ static int __init startup(void)
 	sys_call_table_address = get_system_call_table_address();
 
 	hook_sys_call();
+
+	printk("rbt after hook\n");
 
 	return 0;
 }
