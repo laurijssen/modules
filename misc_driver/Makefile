@@ -1,22 +1,7 @@
-ifeq ($(ARCH),arm)
-  # *UPDATE* 'KDIR' below to point to the ARM Linux kernel source tree on your box
-  KDIR ?= ~/rpi_work/kernel_rpi/linux
-else ifeq ($(ARCH),arm64)
-  # *UPDATE* 'KDIR' below to point to the ARM64 (Aarch64) Linux kernel source
-  # tree on your box
-  KDIR ?= ~/kernel/linux-4.14
-else ifeq ($(ARCH),powerpc)
-  # *UPDATE* 'KDIR' below to point to the PPC64 Linux kernel source tree on your box
-  KDIR ?= ~/kernel/linux-4.9.1
-else
-  # 'KDIR' is the Linux 'kernel headers' package on your host system; this is
-  # usually an x86_64, but could be anything, really (f.e. building directly
-  # on a Raspberry Pi implies that it's the host)
-  KDIR ?= /lib/modules/$(shell uname -r)/build
-endif
+KDIR ?= /lib/modules/$(shell uname -r)/build
 
 # Set FNAME_C to the kernel module name source filename (without .c)
-FNAME_C := miscdrv
+FNAME_C := misc_driver
 
 PWD            := $(shell pwd)
 obj-m          += ${FNAME_C}.o
@@ -41,11 +26,11 @@ clean:
 	@echo "--- cleaning ---"
 	@echo
 	make -C $(KDIR) M=$(PWD) clean
-	rm -f rdwr_test *~
+	rm -f readwrite *~
 
 #--- special case: target to build our user mode test app
-rdwr_test: rdwr_test.c
-	${CROSS_COMPILE}gcc rdwr_test.c -o rdwr_test -Os -Wall
+readwrite: readwrite.c
+	${CROSS_COMPILE}gcc readwrite.c -o readwrite -Os -Wall
 
 #--------------- More (useful) targets! -------------------------------
 INDENT := indent

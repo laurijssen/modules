@@ -27,7 +27,7 @@
  *	  printk's       : dmesg
  *    trace_printk's : cat /sys/kernel/debug/tracing/trace
  *
-/* Keep this defined to use the FTRACE-style trace_printk(), else will use
+ * Keep this defined to use the FTRACE-style trace_printk(), else will use
  * regular printk()
  */
 //#define USE_FTRACE_BUFFER
@@ -127,7 +127,7 @@
  *
  * Sample output (via 'normal' printk method; in this comment, we make / * into \* ...)
  *  CPU)  task_name:PID  | irqs,need-resched,hard/softirq,preempt-depth  \* func_name() *\
- *  001)  rdwr_drv_secret -4857   |  ...0   \* read_miscdrv_rdwr() *\
+ *  001)  rdwr_drv_secret -4857   |  ...0   read_miscdrv_rdwr() 
  *
  * (of course, above, we don't display the 'Duration' and 'Function Calls' fields)
  */
@@ -149,7 +149,7 @@
 		intr = '.';                                                           \
 										                                      \
 	if (PRINTCTX_SHOWHDR == 1)                                                \
-		pr_debug("CPU)  task_name:PID  | irqs,need-resched,hard/softirq,preempt-depth  /* func_name() */\n"); \
+		pr_debug("CPU)  task_name:PID  | irqs,need-resched,hard/softirq,preempt-depth  func_name()\n"); \
 	pr_debug(                                                                    \
 	"%03d) %c%s%c:%d   |  "                                                      \
 	"%c%c%c%u   "                                                                \
