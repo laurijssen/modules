@@ -1,1 +1,0 @@
-cmd_/home/kali/projects/modules/debugfs_driver/debugfs_driver.mod := printf '%s\n'   debugfs_driver.o | awk '!x[$$0]++ { print("/home/kali/projects/modules/debugfs_driver/"$$0) }' > /home/kali/projects/modules/debugfs_driver/debugfs_driver.mod
