@@ -9,16 +9,16 @@
 #define NETLINK_MY_UNIT_PROTO  31
 #define NLSPACE              1024
 
-static const char *thedata = "sample user data to send to kernel via netlink";
+static const char *thedata = "driving on a saterday night";
 
 int main(int argc, char **argv)
 {
         (void)argc;
 	int sd;
 	struct sockaddr_nl src_nl, dest_nl;
-	struct nlmsghdr *nlhdr; // 'carries' the payload
-	struct iovec iov;
-	struct msghdr msg;
+	struct nlmsghdr *nlhdr = {0};
+	struct iovec iov = {0};
+	struct msghdr msg = {0};
 	ssize_t nsent, nrecv;
 
 	/* 1. Get ourselves an endpoint - a netlink socket! */
@@ -52,22 +52,16 @@ int main(int argc, char **argv)
 		fprintf(stderr, "netlink_u: malloc nlhdr failed");
 		exit(EXIT_FAILURE);
 	}
-	memset(nlhdr, 0, NLMSG_SPACE(NLSPACE));
 	nlhdr->nlmsg_len = NLMSG_SPACE(NLSPACE);
 	nlhdr->nlmsg_pid = getpid();
 
-	/* Setup the payload to transmit */
 	strncpy(NLMSG_DATA(nlhdr), thedata, strnlen(thedata, NLSPACE)+1);
 	printf("%s: destination struct, netlink hdr, payload setup\n", argv[0]);
 
-	/* 5. Setup the iovec and ... */
-	memset(&iov, 0, sizeof(struct iovec));
 	iov.iov_base = (void *)nlhdr;
 	iov.iov_len = nlhdr->nlmsg_len;
 	printf("%s: initialized iov structure (nl header folded in)\n", argv[0]);
 
-	/* ... now setup the message header structure */
-	memset(&msg, 0, sizeof(struct msghdr));
 	msg.msg_name = (void *)&dest_nl;   // dest addr
 	msg.msg_namelen = sizeof(dest_nl); // size of dest addr
 	msg.msg_iov = &iov;
@@ -84,8 +78,7 @@ int main(int argc, char **argv)
 		free(nlhdr);
 		exit(EXIT_FAILURE);
 	}
-	printf("%s:sendmsg(): *** success, sent %ld bytes all-inclusive\n"
-		   " (see kernel log for dtl)\n", argv[0], nsent);
+	printf("%s:sendmsg(): *** success, sent %ld bytes all-inclusive\n (see kernel log for dtl)\n", argv[0], nsent);
 	fflush(stdout);
 
 	printf("%s: now blocking on kernel netlink msg via recvmsg() ...\n", argv[0]);
