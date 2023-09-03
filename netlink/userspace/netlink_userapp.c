@@ -1,21 +1,3 @@
-/*
- * ch2/netlink_simple_intf/userapp_netlink/netlink_userapp.c
- **************************************************************************
- * This program is part of the source code released for the book
- *  "Linux Kernel Programming (Part 2)"
- *  (c) Author: Kaiwan N Billimoria
- *  Publisher:  Packt
- *  GitHub repository:
- *  https://github.com/PacktPublishing/Linux-Kernel-Programming-Part-2
- *
- * From: Ch 2 - User-Kernel communication pathways
- **************************************************************************
- * Brief Description:
- * Demo to show simple usage of netlink sockets for user-kernel interfacing.
- * This is the user space component.
- *
- * For details, please refer the book.
- */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -25,14 +7,13 @@
 #include <linux/netlink.h>
 
 #define NETLINK_MY_UNIT_PROTO  31
-  // kernel netlink protocol # (regd by our kernel module)
 #define NLSPACE              1024
 
 static const char *thedata = "sample user data to send to kernel via netlink";
 
 int main(int argc, char **argv)
 {
-    (void)argc;
+        (void)argc;
 	int sd;
 	struct sockaddr_nl src_nl, dest_nl;
 	struct nlmsghdr *nlhdr; // 'carries' the payload
@@ -51,9 +32,6 @@ int main(int argc, char **argv)
 	/* 2. Setup the netlink source addr structure and bind it */
 	memset(&src_nl, 0, sizeof(src_nl));
 	src_nl.nl_family = AF_NETLINK;
-	/* Note carefully: nl_pid is NOT necessarily the PID of the sender
-	 * process; it's actually 'port id' and can be any unique number
-	 */
 	src_nl.nl_pid = getpid();
 	src_nl.nl_groups = 0x0;   // no multicast
 	if (bind(sd, (struct sockaddr *)&src_nl, sizeof(src_nl)) < 0) {
@@ -96,7 +74,6 @@ int main(int argc, char **argv)
 	msg.msg_iovlen = 1; // # elements in msg_iov
 	printf("%s: initialized msghdr structure (iov folded in)\n", argv[0]);
 	
-	/* 6. Actually (finally!) send the message via sendmsg(2) */
 	nsent = sendmsg(sd, &msg, 0);
 	if (nsent < 0) {
 		perror("netlink_u: sendmsg(2) failed");
@@ -111,7 +88,6 @@ int main(int argc, char **argv)
 		   " (see kernel log for dtl)\n", argv[0], nsent);
 	fflush(stdout);
 
-	/* 7. Block on incoming msg from the kernel-space netlink component */
 	printf("%s: now blocking on kernel netlink msg via recvmsg() ...\n", argv[0]);
 	nrecv = recvmsg(sd, &msg, 0);
 	if (nrecv < 0) {
