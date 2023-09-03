@@ -1,1 +1,0 @@
-cmd_/home/kali/projects/modules/netlink/kernelspace/modules.order := {   echo /home/kali/projects/modules/netlink/kernelspace/netlink_kernel.ko; :; } > /home/kali/projects/modules/netlink/kernelspace/modules.order
