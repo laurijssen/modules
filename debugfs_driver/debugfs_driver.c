@@ -27,7 +27,7 @@ struct drv_ctx {
 	u32 config1;
 	u32 config2;
 	u64 config3;
-	char oursecret[128];
+	char secret[128];
 };
 
 static struct drv_ctx *gdrvctx;
@@ -55,11 +55,11 @@ static ssize_t dbgfs_show_drvctx(struct file *filp, char __user *ubuf,
 		 "prodname:%s\n"
 		 "tx:%d,rx:%d,err:%d,myword:%d,power:%d\n"
 		 "config1:0x%x,config2:0x%x,config3:0x%llx (%llu)\n"
-		 "oursecret:%s\n",
+		 "secret:%s\n",
 		 OURMODNAME,
 		 data->tx, data->rx, data->err, data->myword, data->power,
 		 data->config1, data->config2, data->config3, data->config3,
-		 data->oursecret);
+		 data->secret);
 
 	mutex_unlock(&mtx);
 	return simple_read_from_buffer(ubuf, MAXUPASS, fpos, locbuf,
@@ -77,7 +77,7 @@ static struct drv_ctx *alloc_init_drvctx(void)
 	drvctx->config2 = 0x48524a5f;
 	drvctx->config3 = jiffies;
 	drvctx->power = 1;
-	strncpy(drvctx->oursecret, "somedata", 8);
+	strncpy(drvctx->secret, "somedata", 8);
 
 	pr_info("allocated and init the driver context structure\n");
 	return drvctx;

@@ -1,0 +1,1 @@
+cmd_/home/kali/projects/modules/netlink/kernelspace/Module.symvers :=  sed 's/ko$$/o/'  /home/kali/projects/modules/netlink/kernelspace/modules.order | scripts/mod/modpost -m     -o /home/kali/projects/modules/netlink/kernelspace/Module.symvers -e -i Module.symvers -T - 
