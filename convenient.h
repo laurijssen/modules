@@ -12,24 +12,6 @@
 #ifdef __KERNEL__
 #include <linux/ratelimit.h>
 
-/*
- *** PLEASE READ this first ***
- *
- *  We can reduce the load, and increase readability, by using the trace_printk
- *  instead of printk. To see the trace_printk() output do:
- *     cat /sys/kernel/debug/tracing/trace
- *
- *	To use the trace_printk(), pl #define the symbol USE_FTRACE_PRINT in your
- *	Makefile:
- *	 EXTRA_CFLAGS += -DUSE_FTRACE_PRINT
- *	If you do not do this, we will use the usual printk() .
- *
- *	  printk's       : dmesg
- *    trace_printk's : cat /sys/kernel/debug/tracing/trace
- *
- * Keep this defined to use the FTRACE-style trace_printk(), else will use
- * regular printk()
- */
 //#define USE_FTRACE_BUFFER
 #undef USE_FTRACE_BUFFER
 
