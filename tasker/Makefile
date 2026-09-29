@@ -1,18 +1,11 @@
-### Automatic Makefile generation by 'genmake' script        ####
-### Copyright, Jerry Cooperstein, coop@linuxfoundation.org 2003-2023 ####
-### License: GPLv2 ###
+obj-m += tasker.o
 
-obj-m +=  tasker.o
+tasker-objs := mytasker.o tracepoints.o
 
-KDIR ?= /lib/modules/$(shell uname -r)/build
+export KROOT=/lib/modules/6.19.14+kali-amd64/build
 
-allofit:  modules
-modules:
-	@$(MAKE) -C $(KDIR) M=$(shell pwd) modules
-modules_install:
-	@$(MAKE) -C $(KDIR) M=$(shell pwd) modules_install
-kernel_clean:
-	@$(MAKE) -C $(KDIR) M=$(shell pwd) clean
+all:
+	@$(MAKE) -C $(KROOT) M=$(shell pwd) modules
 
 clean: kernel_clean
-	rm -rf   Module.symvers modules.order
+	rm -rf  tracepoints  Module.symvers modules.order

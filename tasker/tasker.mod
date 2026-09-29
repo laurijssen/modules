@@ -1,1 +1,2 @@
-./tasker.o
+./mytasker.o
+./tracepoints.o

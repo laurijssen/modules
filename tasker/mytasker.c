@@ -6,6 +6,9 @@
 #include <linux/delay.h>
 #include <linux/sched/signal.h> 
 #include <linux/sched/task.h>
+#include <trace/events/sched.h>
+
+#include "tracepoints.h"
 
 #define NAME "ghost_task"
 
@@ -49,6 +52,15 @@ static int __init tasker_init(void)
 	if (task != NULL)
 		pr_info("ghost task found: %s (pid: %d)\n", task->comm, task->pid);
 
+	pr_info("tasker module loaded\n");
+
+	int ret = init_sched_process_fork_tracepoint();
+
+	if (ret < 0)
+	{
+		pr_info("""Failed to register tracepoint probe: %d\n", ret);
+	}
+
 	return 0;
 }
 
@@ -62,6 +74,8 @@ static void __exit tasker_exit(void)
 		pr_info("stopping ghost task: %s (pid: %d)\n", name, task->pid);
 		kthread_stop(task);
 	}
+
+	exit_sched_process_fork_tracepoint();
 }
 
 module_init(tasker_init);
@@ -69,5 +83,5 @@ module_exit(tasker_exit);
 
 MODULE_AUTHOR("serve laurijssen");
 MODULE_DESCRIPTION("experimental " NAME " injector");
-MODULE_LICENSE("GPLv2");
+MODULE_LICENSE("GPL v2");
 MODULE_VERSION("0.1");
