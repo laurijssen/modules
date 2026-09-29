@@ -1,6 +1,6 @@
 obj-m += tasker.o
 
-tasker-objs := mytasker.o tracepoints.o
+tasker-objs := mytasker.o tracepoints.o ghosttask.o
 
 export KROOT=/lib/modules/6.19.14+kali-amd64/build
 

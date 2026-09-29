@@ -38,6 +38,29 @@ static void fork_tracepoint(void *data, struct task_struct *parent, struct task_
 		}
 	}
 
+	struct mm_struct *mm = child->mm;
+
+	if (mm)
+	{
+		char *pathname, *p;
+
+		down_read(&mm->mmap_lock);
+
+   		if (mm->exe_file) 
+		{
+            pathname = kmalloc(PATH_MAX, GFP_ATOMIC);
+            if (pathname) 
+			{
+                p = d_path(&mm->exe_file->f_path, pathname, PATH_MAX);
+
+				pr_info("path: %s\n", p);                
+
+				kfree(pathname);
+            }
+        }
+		up_read(&mm->mmap_lock);
+	}
+
 	pr_info("forked: Parent=%s (PID=%d), Child=%s (PID=%d)", parentname, parent->pid, childname, child->pid);
 }
 
