@@ -2,25 +2,28 @@
 #include <linux/module.h>
 #include <linux/sched.h>
 #include <linux/kernel.h>
-#include <linux/sched/signal.h> 
 
 #include "tracepoints.h"
 #include "ghosttask.h"
 
-#define NAME "ghost_task"
-
-static char *name;
+static char *name = "";
 
 static int __init tasker_init(void)
 {
-	pr_info("module started");
-	start_ghost_task(NAME);
+	if (!name || strlen(name) == 0)
+	{
+		pr_warn("supply 'name' argument: 'sudo insmod tasker.ko name=\"ghost_task\"");
+		return -EINVAL;
+	}
+
+	pr_info("module started ghostname %s", name);
+	start_ghost_task(name);
 
 	int ret = init_sched_process_fork_tracepoint();
 
 	if (ret < 0)
 	{
-		pr_info("""Failed to register tracepoint probe: %d\n", ret);
+		pr_info("Failed to register tracepoint probe: %d\n", ret);
 	}
 
 	return 0;
@@ -28,11 +31,12 @@ static int __init tasker_init(void)
 
 static void __exit tasker_exit(void)
 {
-	stop_ghost_task(NAME);
+	stop_ghost_task(name);
 
-	exit_sched_process_fork_tracepoint();
+	exit_sched_process_fork_tracepoint();	
 }
 
+module_param(name, charp, 0000);
 module_init(tasker_init);
 module_exit(tasker_exit);
 

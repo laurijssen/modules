@@ -47,7 +47,7 @@ void stop_ghost_task(const char *name)
 static int task_fn(void *data)
 {
     int i;
-    for (i = 0; i < 100 && !kthread_should_stop(); i++) {
+    for (i = 0; i < 5 && !kthread_should_stop(); i++) {
         pr_info("task running: iteration %d\n", i);
         ssleep(1);
     }
